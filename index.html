@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>in · on · at — Prepositions of time game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fc; --dot:#cfd8ea; --ink:#16213a; --muted:#5b6785; --card:#ffffff; --line:#d5dcec;
+  --blue:#1c4fc0; --orange:#ee5a28; --green:#4fa818; --banner:#1c4fc0; --banner-ink:#fff;
+  --t1:#c2327d; --t2:#6a46c9; --t3:#b27c00; --t4:#2f7088;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e1527; --dot:#1e2a47; --ink:#eaf0ff; --muted:#9aa8cc; --card:#18223d; --line:#2c3a62;
+  --blue:#6f95ff; --orange:#ff8a5c; --green:#7fd24a; --banner:#173a8f;
+  --t1:#ff6fb4; --t2:#a690ff; --t3:#e6b73a; --t4:#6cc3dd;}}
+:root[data-theme="dark"]{
+  --bg:#0e1527; --dot:#1e2a47; --ink:#eaf0ff; --muted:#9aa8cc; --card:#18223d; --line:#2c3a62;
+  --blue:#6f95ff; --orange:#ff8a5c; --green:#7fd24a; --banner:#173a8f;
+  --t1:#ff6fb4; --t2:#a690ff; --t3:#e6b73a; --t4:#6cc3dd;}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);background-image:radial-gradient(var(--dot) 1px,transparent 1.2px);background-size:18px 18px;color:var(--ink);font-family:Lato,system-ui,sans-serif;min-height:100vh}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.banner{background:var(--banner);color:var(--banner-ink);padding:18px 20px 22px;clip-path:polygon(0 0,100% 0,100% 88%,0 100%)}
+.banner h1{font-family:'Special Elite',Georgia,serif;font-weight:400;font-size:clamp(26px,5vw,42px);margin:0}
+.banner p{margin:4px 0 0;font-size:14px;opacity:.9}
+.wrap{max-width:1000px;margin:0 auto;padding:0 16px 40px}
+.hide{display:none!important}
+.panel{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:20px;margin-top:18px}
+h2{font-family:'Special Elite',Georgia,serif;font-weight:400;margin:0 0 10px;font-size:24px}
+.setup label{display:flex;align-items:center;gap:10px;margin:8px 0}
+.setup input[type=text]{flex:1;font:inherit;padding:10px 12px;border-radius:8px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+.dot{width:16px;height:16px;border-radius:50%;flex:none}
+.count{display:flex;gap:8px;margin:8px 0 12px}
+.count button,.btn{border:2px solid var(--ink);background:var(--card);border-radius:10px;padding:10px 16px;font-weight:700}
+.count button[aria-pressed=true]{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.go{background:var(--orange);border-color:var(--orange);color:#fff;font-size:18px;padding:12px 26px;margin-top:10px}
+.btn.ghost{border-color:var(--line);font-weight:400;font-size:14px;padding:6px 12px}
+.ref{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:14px}
+.ref div{border-radius:10px;padding:10px 12px;border:2px solid;font-size:14px;line-height:1.4}
+.ref b{font-size:20px;font-family:'Special Elite',serif;font-weight:400}
+.r-in{border-color:var(--blue)}.r-in b{color:var(--blue)}
+.r-on{border-color:var(--orange)}.r-on b{color:var(--orange)}
+.r-at{border-color:var(--green)}.r-at b{color:var(--green)}
+.score{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 4px;align-items:center}
+.team{flex:1;min-width:130px;border:3px solid var(--line);background:var(--card);border-radius:12px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.team.on{border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 25%,transparent)}
+.team .n{font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.team .p{font-family:'Special Elite',serif;font-size:28px;color:var(--c)}
+.turn{margin:6px 2px 10px;color:var(--muted);font-size:15px}
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:640px){.board{grid-template-columns:repeat(4,1fr);gap:8px}}
+.tile{aspect-ratio:1.15;border-radius:14px;border:0;background:var(--blue);color:#fff;font-family:'Special Elite',serif;font-size:clamp(26px,6vw,46px);box-shadow:0 5px 0 rgba(0,0,0,.28);transition:transform .12s}
+.tile:nth-child(3n+2){background:var(--orange)}
+.tile:nth-child(3n){background:var(--green)}
+.tile:hover:not(:disabled){transform:translateY(-3px)}
+.tile:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.28)}
+.tile:disabled{background:var(--card);color:var(--c,var(--muted));border:3px dashed var(--c,var(--line));box-shadow:none;cursor:default;font-size:clamp(20px,4vw,30px)}
+dialog{border:0;border-radius:18px;padding:0;width:min(640px,94vw);background:var(--card);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.45)}
+dialog::backdrop{background:rgba(8,14,32,.7)}
+.dh{padding:10px 20px;color:#fff;font-weight:900;display:flex;justify-content:space-between;background:var(--c,var(--blue))}
+.db{padding:22px 22px 24px}
+.q{font-family:'Special Elite',Georgia,serif;font-size:clamp(24px,5vw,36px);line-height:1.35;margin:4px 0 20px}
+.gap{display:inline-block;min-width:2.2em;border-bottom:4px solid var(--ink);text-align:center;font-family:Lato,sans-serif;font-weight:900}
+.gap.in{color:var(--blue);border-color:var(--blue)}.gap.on{color:var(--orange);border-color:var(--orange)}.gap.at{color:var(--green);border-color:var(--green)}
+.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.choice{padding:18px 0;border-radius:12px;border:0;color:#fff;font-weight:900;font-size:clamp(24px,6vw,34px);box-shadow:0 4px 0 rgba(0,0,0,.28)}
+.choice[data-v=in]{background:var(--blue)}.choice[data-v=on]{background:var(--orange)}.choice[data-v=at]{background:var(--green)}
+.choice:disabled{opacity:.35;box-shadow:none}
+.choice.right{opacity:1;outline:4px solid var(--ink)}
+.fb{margin-top:18px;padding:12px 14px;border-radius:10px;background:var(--bg);border-left:6px solid var(--line);font-size:15px;line-height:1.5}
+.fb strong{font-size:20px;display:block}
+.fb.ok{border-color:var(--green)}.fb.no{border-color:var(--orange)}
+.src{color:var(--muted);font-size:12px;margin-top:8px}
+.special{text-align:center}
+.special .big{font-size:64px;line-height:1}
+.special h3{font-family:'Special Elite',serif;font-weight:400;font-size:30px;margin:8px 0}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:10px;flex-wrap:wrap}
+.winner{text-align:center}
+.winner .big{font-family:'Special Elite',serif;font-size:clamp(30px,7vw,52px);margin:10px 0}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+body,.gap,.banner h1,h2,.ref b,.tile,.q,.team .p,.special h3,.winner .big{font-family:'DM Sans',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif}
+.banner h1,h2,.ref b,.tile,.team .p,.special h3,.winner .big{font-weight:700;letter-spacing:-.01em}
+.q{font-weight:500;letter-spacing:-.01em}
+</style>
+</head>
+<body>
+<header class="banner">
+  <div class="wrap" style="padding-bottom:0">
+    <h1>in · on · at</h1>
+    <p>Let’s Enjoy English A1.1 · Unit 5 “The right time” · Step 2 grammar game</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="setup" class="panel setup">
+    <h2>Ready to play?</h2>
+    <p>Pick a number, then choose in, on or at. Try to get the highest score!</p>
+    <div class="ref" aria-label="Grammar reminder">
+      <div class="r-in"><b>in</b> the morning, the afternoon, the evening, months, seasons, years<br><i>Monat, Jahr, Jahreszeit, Tageszeit</i></div>
+      <div class="r-on"><b>on</b> Monday, Tuesday, dates, my birthday, Christmas Day<br><i>Tag, Datum</i></div>
+      <div class="r-at"><b>at</b> the weekend, half past ten, ten o’clock, noon, night<br><i>Uhrzeit, genauer Zeitpunkt</i></div>
+    </div>
+    <button class="btn go" id="start">Start game</button>
+  </section>
+
+  <section id="game" class="hide">
+    <div class="score" id="score"></div>
+    <div class="turn" id="turn"></div>
+    <div class="board" id="board"></div>
+    <div class="foot">
+      <button class="btn ghost" id="restart">New game</button>
+      <span class="src">Correct = 1 point.</span>
+    </div>
+  </section>
+
+  <section id="end" class="panel winner hide">
+    <h2>Game over</h2>
+    <div class="big" id="winner"></div>
+    <div id="final"></div>
+    <button class="btn go" id="again">Play again</button>
+  </section>
+</main>
+
+<dialog id="dlg" aria-live="polite"></dialog>
+
+<script>
+// Question bank. Source: Let’s Enjoy English A1.1 p. 70 (5a dialogue, grammar box, exercise) and the in/on/at matching cards.
+var Q = [
+ ["Where is Al ___ Wednesday?","on","Book p. 70"],
+ ["We are in Dublin ___ the weekend.","at","Book p. 70 (UK: at the weekend)"],
+ ["Is your lesson ___ the evening?","in","Book p. 70"],
+ ["It’s Ann’s birthday ___ the weekend!","at","Book p. 70"],
+ ["The meeting is ___ Thursday.","on","Book p. 70"],
+ ["The meeting is ___ 9.30.","at","Book p. 70"],
+ ["The meeting is ___ the morning.","in","Book p. 70"],
+ ["You’re in Munich ___ Thursday.","on","Book p. 70, dialogue"],
+ ["The meeting in Geneva is ___ the afternoon.","in","Book p. 70, dialogue"],
+ ["___ Friday you have a meeting in Geneva.","on","Book p. 70, dialogue"],
+ ["It’s ___ half past nine.","at","Book p. 70, dialogue"],
+ ["My birthday is ___ October.","in","Matching cards"],
+ ["The party is ___ Saturday evening.","on","Matching cards"],
+ ["We have a break ___ lunchtime.","at","Matching cards"],
+ ["It’s very hot ___ summer.","in","Matching cards"],
+ ["Let’s meet ___ Christmas Day.","on","Matching cards"]
+];
+var RULE = {
+ in:"<strong>in</strong> + parts of the day, months, seasons, years<br><i>in + Tageszeit, Monat, Jahreszeit, Jahr</i>",
+ on:"<strong>on</strong> + days and dates<br><i>on + Wochentag, Datum, besonderer Tag</i>",
+ at:"<strong>at</strong> + clock times, the weekend, night<br><i>at + Uhrzeit, genauer Zeitpunkt</i>"
+};
+var SPECIALS = [
+ {k:"bonus",icon:"🎉",t:"Bonus!",d:"+5 points for your team!"},
+ {k:"bomb",icon:"💣",t:"Boom!",d:"Your team loses 3 points."},
+ {k:"lucky",icon:"🍀",t:"Lucky!",d:"+3 points!"},
+ {k:"double",icon:"✨",t:"Double!",d:"Your score doubles!"}
+];
+var COLORS=["--t1","--t2","--t3","--t4"], DEFAULT=["Team A","Team B","Team C","Team D"];
+var n=2, teams=[], cur=0, tiles=[], left=0;
+var $=function(id){return document.getElementById(id)}, dlg=$("dlg");
+
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+
+
+function start(){
+  teams=[{name:"Your score",score:0,c:"--blue"}];
+  var items=Q.map(function(q){return {type:"q",q:q}});
+  tiles=shuffle(items).map(function(it){it.used=false;return it});
+  left=tiles.length;cur=0;
+  $("setup").classList.add("hide");$("end").classList.add("hide");$("game").classList.remove("hide");
+  draw();
+}
+function draw(){
+  $("score").innerHTML=teams.map(function(t,i){return '<div class="team'+(i===cur?' on':'')+'" style="--c:var('+t.c+')"><span class="n">'+esc(t.name)+'</span><span class="p">'+t.score+'</span></div>'}).join("");
+  $("turn").textContent="Choose a number. "+left+" tiles left.";
+  $("board").innerHTML=tiles.map(function(t,i){
+    return t.used?'<button class="tile" disabled style="--c:var('+t.c+')" aria-label="Tile '+(i+1)+' used">'+t.mark+'</button>'
+      :'<button class="tile" data-i="'+i+'" aria-label="Tile '+(i+1)+'">'+(i+1)+'</button>'}).join("");
+}
+function next(){
+  dlg.close();
+  if(left===0){finish();return}
+  cur=(cur+1)%teams.length;draw();
+}
+function openTile(i){
+  var t=tiles[i];if(t.used)return;
+  var tm=teams[cur];
+  dlg.style.setProperty("--c","var("+tm.c+")");
+  if(t.type==="q"){
+    var parts=t.q[0].split("___");
+    dlg.innerHTML='<div class="dh"><span>'+esc(tm.name)+'</span><span>Tile '+(i+1)+'</span></div><div class="db"><p class="q" id="qq">'+esc(parts[0])+'<span class="gap" id="gap">&nbsp;&nbsp;</span>'+esc(parts[1])+'</p>'
+      +'<div class="choices">'+["in","on","at"].map(function(w){return '<button class="choice" data-v="'+w+'">'+w+'</button>'}).join("")+'</div><div id="fb"></div></div>';
+    dlg.dataset.i=i;
+  }else{
+    var s=t.s;
+    t.used=true;left--;
+    var msg=applySpecial(s.k,tm);
+    t.mark=s.icon;t.c=tm.c;
+    dlg.innerHTML='<div class="dh"><span>'+esc(tm.name)+'</span><span>Tile '+(i+1)+'</span></div><div class="db special"><div class="big">'+s.icon+'</div><h3>'+s.t+'</h3><p>'+msg+'</p><button class="btn go" id="nx">Next tile</button></div>';
+  }
+  if(!dlg.open)dlg.showModal();
+  draw_keep();
+}
+function draw_keep(){/* scoreboard updates after dialog closes */}
+function applySpecial(k,tm){
+  if(k==="bonus"){tm.score+=5;return esc(tm.name)+" gets +5 points!"}
+  if(k==="bomb"){tm.score=Math.max(0,tm.score-3);return esc(tm.name)+" loses 3 points."}
+  if(k==="double"){tm.score*=2;return esc(tm.name)+" now has "+tm.score+" points!"}
+  if(k==="lucky"){tm.score+=3;return "You get +3 points!"}
+  var lead=null;teams.forEach(function(t){if(t!==tm&&(!lead||t.score>lead.score))lead=t});
+  if(lead&&lead.score>tm.score){var g=Math.min(2,lead.score);lead.score-=g;tm.score+=g;return esc(tm.name)+" takes "+g+" point"+(g>1?"s":"")+" from "+esc(lead.name)+"!"}
+  tm.score+=1;return "No team is ahead of you, so you get +1 point!";
+}
+function answer(v){
+  var i=+dlg.dataset.i,t=tiles[i],ok=(v===t.q[1]),tm=teams[cur];
+  t.used=true;left--;t.c=tm.c;t.mark=ok?"✓":"✗";
+  if(ok)tm.score+=1;
+  var gap=$("gap");gap.textContent=t.q[1];gap.className="gap "+t.q[1];
+  [].forEach.call(dlg.querySelectorAll(".choice"),function(b){b.disabled=true;if(b.dataset.v===t.q[1])b.classList.add("right")});
+  $("fb").innerHTML='<div class="fb '+(ok?'ok':'no')+'"><strong>'+(ok?'Correct! +1 point':'Not quite. The answer is “'+t.q[1]+'”.')+'</strong>'+RULE[t.q[1]]+'<div class="src">'+esc(t.q[2])+'</div></div><div class="foot"><span></span><button class="btn go" id="nx">Next tile</button></div>';
+  $("nx").focus();
+}
+dlg.addEventListener("click",function(e){
+  var c=e.target.closest(".choice");if(c&&!c.disabled)return answer(c.dataset.v);
+  if(e.target.closest("#nx"))next();
+});
+dlg.addEventListener("cancel",function(e){if(dlg.querySelector("#nx"))return;e.preventDefault()});
+$("board").addEventListener("click",function(e){var b=e.target.closest("[data-i]");if(b)openTile(+b.dataset.i)});
+function finish(){
+  $("game").classList.add("hide");$("end").classList.remove("hide");
+  var s=teams.slice().sort(function(a,b){return b.score-a.score});
+  var top=s.filter(function(t){return t.score===s[0].score});
+  $("winner").innerHTML="🏆 You scored "+teams[0].score+" points!";
+  $("final").textContent=teams[0].score>=14?"Fantastic work!":teams[0].score>=10?"Well done!":"Good try. Play again to improve!";
+}
+$("start").onclick=start;
+$("restart").onclick=function(){if(confirm("Start a new game?")){$("game").classList.add("hide");$("setup").classList.remove("hide")}};
+$("again").onclick=function(){$("end").classList.add("hide");$("setup").classList.remove("hide")};
+</script>
+</body>
+</html>
